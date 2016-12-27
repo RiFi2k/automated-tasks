@@ -1,0 +1,22 @@
+---
+# Backup the DB of all sites
+backup_db: true
+# Interval for DB backup, below example is 2x daily at 6AM and 8PM
+backup_db_cron_interval: "0 6,20 * * *"
+
+# Backup the web root of all sites
+backup_files: true
+# Interval for web root backup, below example is every other day at 4AM
+backup_files_cron_interval: "0 4 */2 * *"
+
+# Sets how long to keep local backups for, only applicable if not using GCS
+# or using GCS and gcs_keep_local_backups: true
+backup_local_lifecycle_days: 10
+
+# Google Cloud Storage settings
+google_cloud_storage: false
+gcs_bucket_name: example-bucket-name
+# How long to keep files on GCS
+gcs_lifecycle_days: 10
+gcs_keep_local_backups: false
+gcs_parallel_composite_upload: true

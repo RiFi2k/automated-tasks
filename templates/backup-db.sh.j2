@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# {{ ansible_managed }}
+
+# Include config
+source {{ www_root }}/.tasks/sites.sh
+
+# Filenames
+NOW=$(date +%Y-%m-%d-%H%M)
+
+for i in ${SITES[@]}
+do
+	cd "$ROOT/$i/current"
+	# Backup database
+	wp db export "$ROOT/$i/backup/$i-db-${NOW}.sql" --add-drop-table --quiet
+	{% if not google_cloud_storage -%}
+	# Remove old backups
+    find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
+    {% endif %}
+	{% if google_cloud_storage and not gcs_keep_local_backups -%}
+	# Send to Google Cloud Storage
+	gsutil -m mv -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+	{% endif %}
+	{% if google_cloud_storage and gcs_keep_local_backups -%}
+	# Remove old backups
+    find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
+    # Send to Google Cloud Storage
+    gsutil -m cp -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+    {% endif %}
+done

@@ -1,0 +1,45 @@
+---
+- name: Create backup folder for sites
+  file:
+    path: "{{ www_root }}/{{ item.key }}/backup"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: 0755
+    state: directory
+  with_dict: "{{ wordpress_sites }}"
+
+- name: Create tasks directory
+  file:
+    path: "{{ www_root }}/.tasks"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    state: directory
+
+- name: Create sites file
+  template:
+    src: sites.sh.j2
+    dest: "{{ www_root }}/.tasks/sites.sh"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "u+rx"
+
+- name: Create backup file for DB
+  template:
+    src: backup-db.sh.j2
+    dest: "{{ www_root }}/.tasks/backup-db.sh"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "u+rx"
+  when: backup_db
+
+- name: Create backup file for web root
+  template:
+    src: backup-files.sh.j2
+    dest: "{{ www_root }}/.tasks/backup-files.sh"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "u+rx"
+  when: backup_files
+
+- include: google-cloud-storage.yml
+  when: google_cloud_storage

@@ -1,0 +1,12 @@
+---
+- name: Create GCS lifecycle file
+  template:
+    src: gcs-lifecycle.json.j2
+    dest: "{{ www_root }}/.tasks/gcs-lifecycle.json"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+
+- name: Set GCS lifecycle
+  command: "gsutil lifecycle set {{ www_root }}/.tasks/gcs-lifecycle.json gs://{{ gcs_bucket_name }}"
+  become: true
+  become_user: {{ web_user }}

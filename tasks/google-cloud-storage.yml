@@ -7,6 +7,6 @@
     group: "{{ web_group }}"
 
 - name: Set GCS lifecycle
-  command: "gsutil lifecycle set {{ www_root }}/.tasks/gcs-lifecycle.json gs://{{ gcs_bucket_name }}"
+  command: "gsutil lifecycle set {{ www_root }}/.tasks/gcs-lifecycle.json gs://{{ backup_gcs_bucket_name }}"
   become: true
   become_user: {{ web_user }}

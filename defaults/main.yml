@@ -14,9 +14,9 @@ backup_files_cron_interval: "0 4 */2 * *"
 backup_local_lifecycle_days: 10
 
 # Google Cloud Storage settings
-google_cloud_storage: false
-gcs_bucket_name: example-bucket-name
+backup_google_cloud_storage: false
+backup_gcs_bucket_name: example-bucket-name
 # How long to keep files on GCS
-gcs_lifecycle_days: 10
-gcs_keep_local_backups: false
-gcs_parallel_composite_upload: true
+backup_gcs_lifecycle_days: 10
+backup_gcs_keep_local_backups: false
+backup_gcs_parallel_composite_upload: true

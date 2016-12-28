@@ -42,4 +42,4 @@
   when: backup_files
 
 - include: google-cloud-storage.yml
-  when: google_cloud_storage
+  when: backup_google_cloud_storage

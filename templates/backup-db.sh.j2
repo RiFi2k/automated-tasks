@@ -12,18 +12,18 @@ do
 	cd "$ROOT/$i/current"
 	# Backup database
 	wp db export "$ROOT/$i/backup/$i-db-${NOW}.sql" --add-drop-table --quiet
-	{% if not google_cloud_storage -%}
+	{% if not backup_google_cloud_storage -%}
 	# Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
     {% endif %}
-	{% if google_cloud_storage and not gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and not backup_gcs_keep_local_backups -%}
 	# Send to Google Cloud Storage
-	gsutil -m mv -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+	gsutil -m mv -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
 	{% endif %}
-	{% if google_cloud_storage and gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and backup_gcs_keep_local_backups -%}
 	# Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
     # Send to Google Cloud Storage
-    gsutil -m cp -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+    gsutil -m cp -L "$ROOT/$i/logs/backup.log" -Z "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
     {% endif %}
 done

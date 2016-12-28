@@ -12,28 +12,28 @@ do
 	cd "$ROOT/$i/backup"
 	# Backup web directory
 	tar -zcf "$i-web-${NOW}.tar.gz" -C ../current web
-	{% if not google_cloud_storage -%}
+	{% if not backup_google_cloud_storage -%}
     # Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
     {% endif %}
-	{% if google_cloud_storage and gcs_parallel_composite_upload and not gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and backup_gcs_parallel_composite_upload and not backup_gcs_keep_local_backups -%}
 	# Send to Google Cloud Storage
-	gsutil -o GSUtil:parallel_composite_upload_threshold=150M mv -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+	gsutil -o GSUtil:parallel_composite_upload_threshold=150M mv -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
 	{% endif %}
-	{% if google_cloud_storage and not gcs_parallel_composite_upload and not gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and not backup_gcs_parallel_composite_upload and not backup_gcs_keep_local_backups -%}
     # Send to Google Cloud Storage
-    gsutil mv -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+    gsutil mv -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
     {% endif %}
-	{% if google_cloud_storage and gcs_parallel_composite_upload and gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and backup_gcs_parallel_composite_upload and backup_gcs_keep_local_backups -%}
 	# Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
 	# Send to Google Cloud Storage
-	gsutil -o GSUtil:parallel_composite_upload_threshold=150M cp -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+	gsutil -o GSUtil:parallel_composite_upload_threshold=150M cp -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
 	{% endif %}
-	{% if google_cloud_storage and not gcs_parallel_composite_upload and gcs_keep_local_backups -%}
+	{% if backup_google_cloud_storage and not backup_gcs_parallel_composite_upload and backup_gcs_keep_local_backups -%}
 	# Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
     # Send to Google Cloud Storage
-    gsutil cp -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ gcs_bucket_name }}/$i/"
+    gsutil cp -c -L "$ROOT/$i/logs/backup.log" "$ROOT/$i/backup/*" "gs://{{ backup_gcs_bucket_name }}/$i/"
     {% endif %}
 done

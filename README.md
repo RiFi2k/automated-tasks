@@ -4,27 +4,43 @@ Automated Tasks
 Automate some stuff
 
 * Backup Site Files & Databases
-* Ship Backups To Google Cloud Storage
-* Set Lifecycle Of Offsite Files
+* Save Local Backups
+* Ship Backups To Google Cloud Storage (Optional)
+* Ship Backups To AWS S3 (Optional)
+* Set Lifecycle Of Files
 
-In the works
+If you want to use Google Cloud Storage or AWS S3 for backing up files off-site you need to manually install
+and authenticate before-hand or else this role will fail. Instruction for each service
+linked below.
+It is important to make sure these instruction are done on the remote server and the authentication commands are
+performed by the "web_user" set up in Trellis.
+(default user is 'web' for production and staging unless you changed it)
+
+#### Google Cloud Storage
+https://cloud.google.com/sdk/docs/quickstart-debian-ubuntu
+
+Initalize (must do this logged in as 'web' or make sure settings are global for all users) -
+https://cloud.google.com/sdk/docs/initializing
+
+#### AWS S3
+https://github.com/aws/aws-cli
+
+### In the works
 
 * Scan for malware
 * Run security scans on server
 * Check integrity of WP files
 * Alerts (email + sms)
 
-Props to A5hleyRich for the base of this - https://github.com/A5hleyRich/simple-automated-tasks
-
 Requirements
 ------------
 
-* Google Cloud Storage
-* Google Compute Engine Instance
 * Trellis - https://github.com/roots/trellis/
 
 Role Variables
 --------------
+
+See defaults/main.yml
 
 
 Dependencies
@@ -43,6 +59,11 @@ License
 -------
 
 MIT
+
+Props
+-----
+
+https://github.com/A5hleyRich/simple-automated-tasks
 
 Author Information
 ------------------

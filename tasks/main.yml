@@ -32,7 +32,7 @@
     mode: "u+rx"
   when: backup_db
 
-- name: Create backup file for web root
+- name: Create backup file for uploads
   template:
     src: backup-files.sh.j2
     dest: "{{ www_root }}/.tasks/backup-files.sh"

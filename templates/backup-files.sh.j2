@@ -10,8 +10,8 @@ NOW=$(date +%Y-%m-%d-%H%M)
 for i in ${SITES[@]}
 do
 	cd "$ROOT/$i/backup"
-	# Backup web directory
-	tar -zcf "$i-web-${NOW}.tar.gz" -C ../current web
+	# Backup uploads directory
+	tar -zcf "$i-uploads-${NOW}.tar.gz" -C ../shared uploads
 	{% if not backup_google_cloud_storage -%}
     # Remove old backups
     find "$ROOT/$i/backup" -mtime +{{ backup_local_lifecycle_days }} | xargs rm -fR
